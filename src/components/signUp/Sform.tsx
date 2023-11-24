@@ -5,6 +5,9 @@ import SchoolDropDown from './SchoolDropDown';
 import { useState } from 'react';
 import { ActionMeta } from 'react-select';
 import { OptionType } from '../signUp/DropDown';
+import axios from 'axios';
+import { useParams } from 'react-router-dom';
+import { LoginComplete } from '../login/LoginComplete';
 
 const Ndiv = styled.div`
     color: var(--black, #000);
@@ -74,7 +77,12 @@ const Sform = () => {
         // generation: 0,
         // role: 0,
         // track: 0,
+        // generation: 0,
+        // role: 0,
+        // track: 0,
     });
+
+    const [isSuccess , updateIsSuccess] = useState<boolean>(false);
 
     const handleSelectChange =
         (field: keyof FormState) =>
@@ -90,26 +98,51 @@ const Sform = () => {
             }
         };
 
+    const {provider} = useParams();
+
+    const requestSignup = async () =>{
+        const idtoken = localStorage.getItem('idtoken');
+        
+        try {
+            const response = await axios.post(`${process.env.REACT_APP_BASE_URL}/v1/auth/${provider}/signup`,
+             FormData,
+             {
+                withCredentials : true,
+            });
+            
+            //응답 성공 시
+            if(response.data.isSuccess){
+                localStorage.removeItem('idtoken');
+                updateIsSuccess(true);
+            }
+            else {
+                alert("서버 통신 오류! 다시 시도해주세요!");
+            }
+        }
+        catch(error) {
+            console.error("요청 실패" , error);
+        }
+    }
+
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         // 모든 필드 완성되었는지 검사하는 로직 추가함
         if (
             formState.name === '' ||
             formState.university === 0 ||
-            formState.department === ''
-            // formState.generation === 0 ||
-            // formState.role === 0 ||
-            // formState.track === 0
+            formState.department === '' 
         )
             alert('모든 항목을 입력했는지 확인해주세요.');
         else {
             /* button click으로 해서 정보 저장됨 확인 */
             console.log(formState);
+            requestSignup();
         }
     };
 
     return (
         <>
+        {!isSuccess ?
             <form className="formDiv">
                 <div className="Stitle">내 정보</div>
                 <Ndiv>이름</Ndiv>
@@ -133,7 +166,6 @@ const Sform = () => {
                         })
                     }
                 />
-
                 {/* <div className="SformDiv">
                     <div className="SfromDiv2">
                         <Ndiv>기수</Ndiv>
@@ -161,6 +193,9 @@ const Sform = () => {
                     저장하기
                 </button>
             </form>
+            :
+            <LoginComplete/>
+        }
         </>
     );
 };

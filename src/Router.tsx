@@ -17,6 +17,10 @@ import AboutPage from './routes/AboutPage';
 import BabyLion from './components/recruit/apply/mobile/BabyLion';
 import Recruit from './components/univrecruit/UnivRecruit';
 import UnivRecruit from './components/univrecruit/UnivRecruit';
+import { UserInfo } from './components/mypage/UserInfo';
+import UserInfoModify from './components/mypage/UserInfoModify';
+
+import { Redirect } from './components/login/Redirect';
 
 const router = createBrowserRouter([
     {
@@ -28,7 +32,7 @@ const router = createBrowserRouter([
                 element: <LandingPage />,
             },
             {
-                path: '/signup',
+                path: '/signup/:provider',
                 element: <SignUp />,
             },
             {
@@ -36,8 +40,16 @@ const router = createBrowserRouter([
                 element: <LoginPage />,
             },
             {
+                path : '/oauth/:provider/redirect',
+                element : <Redirect/>
+            },
+            {
                 path: '/mypage',
                 element: <Mypage />,
+            },
+            {
+                path: '/temp',
+                element : <UserInfoModify/>
             },
             {
                 path: '/project',

@@ -1,21 +1,23 @@
-import { useState } from 'react';
-
+import { useState,useEffect } from 'react';
 import styled from 'styled-components';
 import { Avatar, Button, UserBox } from './Common';
 import { UserFollows } from './UserFollows';
 import { useNavigate } from 'react-router-dom';
+import { useRecoilValue } from 'recoil';
+import { userState } from '../../store/auth';
 
 export const UserInfo = () => {
     const [isModal, setIsModal] = useState<string | undefined>('');
-
     const handleModal = (e: React.MouseEvent<HTMLDivElement>) => {
         setIsModal(e.currentTarget.dataset.type);
     };
+    const userinfo = useRecoilValue(userState)
 
-    const navigate = useNavigate();
-    const goToModify = (): void => {
-        navigate('modify');
-    };
+    const navigate = useNavigate()
+    const goToModify = ():void => {        
+      navigate("modify")
+    }    
+        
 
     return (
         <Wrapper>
@@ -26,7 +28,7 @@ export const UserInfo = () => {
                     <UserProfile>
                         <UserName>
                             {' '}
-                            <p>박혜준</p> <div>아기사자</div>{' '}
+                            <p>{userinfo.name}</p> <div>아기사자</div>{' '}
                         </UserName>
                         <UserPart>
                             {' '}
